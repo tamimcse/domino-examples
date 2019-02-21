@@ -10,9 +10,6 @@
 // Total number of bytes received so far.
 int bytes_received = 0;
 
-// Current feedback throughput of this router
-int curr_feedback_thput = INIT_FEEDBACK_THPUT;
-
 //last time when RCP rate was calculated
 int last_time = 0;
 
@@ -20,6 +17,8 @@ int last_time = 0;
 int avg_rtt [NUM_PORTS] = {200};
 //RCP Control Intervals for each port
 int control_intervals [NUM_PORTS] = {200};
+//RCP feedback throughput for each port
+int feedback_rate [NUM_PORTS] = {200};
 
 struct Packet {
   int size_bytes;
@@ -32,13 +31,13 @@ struct Packet {
 };
 
 void func(struct Packet pkt) {
+  pkt.id = pkt.dport;
 
   //Update feedback throughput to the packet
-  if (pkt.feedback_thput > curr_feedback_thput) {
-    pkt.feedback_thput = curr_feedback_thput;  
+  if (pkt.feedback_thput > feedback_rate[pkt.id]) {
+    pkt.feedback_thput = feedback_rate[pkt.id];  
   }
 
-  pkt.id = pkt.dport;
   //1 = .98 and 2 = .02 
   avg_rtt[pkt.id] = avg_rtt[pkt.id] * 1 + pkt.rtt * 2;
   
@@ -49,6 +48,6 @@ void func(struct Packet pkt) {
     control_intervals[pkt.id] = avg_rtt[pkt.id];
     bytes_received = 0;
 //RCP stability constants alpha=1 beta=.5
-//    curr_feedback_thput = curr_feedback_thput * (1 + (((C - (bytes_received/control_intervals[pkt.id]))) - ((pkt.queue/2)/control_intervals[pkt.id]))/C);
+//    feedback_rate[pkt.id] = feedback_rate[pkt.id] * (1 + (((C - (bytes_received/control_intervals[pkt.id]))) - ((pkt.queue/2)/control_intervals[pkt.id]))/C);
   }
 }
