@@ -1,7 +1,3 @@
-//default RCP feedback throughput and control interval
-#define INIT_FEEDBACK_THPUT 20000
-#define INIT_CONTROL_INTERVAL 200
-
 #define NUM_PORTS 64
 
 //Link capacity (per port)
