@@ -1,7 +1,5 @@
 #define NUM_PORTS 64
-
-//Link capacity (per port)
-#define C 1000000000000
+#define C 1000000000000 //Link capacity (per port)
 
 //last time when RCP rate was calculated
 int last_time = 0;
