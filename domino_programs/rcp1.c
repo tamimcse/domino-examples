@@ -50,14 +50,12 @@ void func(struct Packet pkt) {
   avg_rtt[pkt.id] = avg_rtt[pkt.id] * 1 + pkt.rtt * 2;
   
   if ((pkt.time - last_time) < control_interval) {
-    sum_rtt += pkt.rtt;
     num_pkts_seen += 1;
     bytes_received += pkt.size_bytes; 
   }
   else {
-//    control_interval = sum_rtt/num_pkts_seen;
+    control_interval = avg_rtt[pkt.id];
     num_pkts_seen = 0;
-    sum_rtt = 0;
     bytes_received = 0;
 //RCP stability constants alpha=1 beta=.5
 //    curr_feedback_thput = curr_feedback_thput * (1 + (((C - (bytes_received/control_interval))) - ((pkt.queue/2)/control_interval))/C);
