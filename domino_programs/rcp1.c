@@ -5,10 +5,6 @@
 //Link capacity (per port)
 #define C 40*1024*1024*1024
 
-//RCP stability constants
-#define ALPHA 4
-#define BETA 6
-
 // Total number of bytes received so far.
 int bytes_received = 0;
 
@@ -52,6 +48,7 @@ void func(struct Packet pkt) {
     num_pkts_seen = 0;
     sum_rtt = 0;
     bytes_received = 0;
-//    curr_feedback_thput = curr_feedback_thput * (1 + (((ALPHA / 10) * (C - (bytes_received/control_interval))) - (((BETA /10) * pkt.queue)/control_interval))/C);
+//RCP stability constants alpha=1 beta=.5
+//    curr_feedback_thput = curr_feedback_thput * (1 + (((C - (bytes_received/control_interval))) - ((pkt.queue/2)/control_interval))/C);
   }
 }
