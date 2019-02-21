@@ -2,6 +2,8 @@
 #define INIT_FEEDBACK_THPUT 20000
 #define INIT_CONTROL_INTERVAL 200
 
+#define NUM_PORTS 64
+
 //Link capacity (per port)
 #define C 40*1024*1024*1024
 
@@ -23,12 +25,17 @@ int control_interval = INIT_CONTROL_INTERVAL;
 //last time when RCP rate was calculated
 int last_time = 0;
 
+//RTT per ports
+int avg_rtt [NUM_PORTS] = {200};
+
 struct Packet {
   int size_bytes;
   int rtt;
   int queue;
   int feedback_thput;
-  int time;	
+  int time;
+  int dport;
+  int id; // array index
 };
 
 void func(struct Packet pkt) {
@@ -37,6 +44,10 @@ void func(struct Packet pkt) {
   if (pkt.feedback_thput > curr_feedback_thput) {
     pkt.feedback_thput = curr_feedback_thput;  
   }
+
+  pkt.id = pkt.dport;
+  //1 = .98 and 2 = .02 
+  avg_rtt[pkt.id] = avg_rtt[pkt.id] * 1 + pkt.rtt * 2;
   
   if ((pkt.time - last_time) < control_interval) {
     sum_rtt += pkt.rtt;
