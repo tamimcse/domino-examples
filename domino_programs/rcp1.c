@@ -47,6 +47,6 @@ void func(struct Packet pkt) {
 //RCP stability constants alpha=1 beta=.5
 //    feedback_rate[pkt.id] = feedback_rate[pkt.id] * (1 + ((C - incoming_rate[pkt.id]) - ((pkt.queue/2)/avg_rtt[pkt.id]))/C);
 //    feedback_rate[pkt.id] += feedback_rate[pkt.id];
-//    feedback_rate[pkt.id] += 100;
+    feedback_rate[pkt.id] += (pkt.queue/2)/avg_rtt[pkt.id];
   }
 }
