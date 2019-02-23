@@ -42,7 +42,7 @@ void func(struct Packet pkt) {
   }
   else {
 
-    incoming_rate[pkt.id] = bytes_received[pkt.id]/control_intervals[pkt.id];
+    incoming_rate[pkt.id] = (control_intervals[pkt.id] == 128) ? bytes_received[pkt.id] >> 7 : bytes_received[pkt.id] >> 8;
     control_intervals[pkt.id] = (avg_rtt[pkt.id] < 128) ? 128 : 256;
     bytes_received[pkt.id] = 0;
 //RCP stability constants alpha=1 beta=.5
