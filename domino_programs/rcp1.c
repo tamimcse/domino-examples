@@ -41,6 +41,12 @@ void func(struct Packet pkt) {
     bytes_received[pkt.id] += pkt.size_bytes; 
   }
   else {
+    if (avg_rtt[pkt.id] < 128)
+      control_intervals[pkt.id] = 128;
+    else if (avg_rtt[pkt.id] < 256)
+      control_intervals[pkt.id] = 256;
+    else
+      control_intervals[pkt.id] = 512;
     incoming_rate[pkt.id] = bytes_received[pkt.id]/control_intervals[pkt.id];
     control_intervals[pkt.id] = avg_rtt[pkt.id];
     bytes_received[pkt.id] = 0;
