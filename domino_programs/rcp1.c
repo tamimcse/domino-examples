@@ -41,17 +41,13 @@ void func(struct Packet pkt) {
     bytes_received[pkt.id] += pkt.size_bytes; 
   }
   else {
-    if (avg_rtt[pkt.id] < 128)
-      control_intervals[pkt.id] = 128;
-    else 
-      control_intervals[pkt.id] = 256;
 
     incoming_rate[pkt.id] = bytes_received[pkt.id]/control_intervals[pkt.id];
-    control_intervals[pkt.id] = avg_rtt[pkt.id];
+    control_intervals[pkt.id] = (avg_rtt[pkt.id] < 128) ? 128 : 256;
     bytes_received[pkt.id] = 0;
 //RCP stability constants alpha=1 beta=.5
 //    feedback_rate[pkt.id] = feedback_rate[pkt.id] * (1 + ((C - incoming_rate[pkt.id]) - ((pkt.queue/2)/avg_rtt[pkt.id]))/C);
 //    feedback_rate[pkt.id] += feedback_rate[pkt.id];
-    feedback_rate[pkt.id] += (pkt.queue/2)/avg_rtt[pkt.id];
+//    feedback_rate[pkt.id] += (pkt.queue/2)/avg_rtt[pkt.id];
   }
 }
