@@ -39,15 +39,13 @@ void func(struct Packet pkt) {
   //.98 * avg_rtt + .02 * pkt.rtt 
   avg_rtt[pkt.id] = (avg_rtt[pkt.id] * 49 + pkt.rtt)/50;
   
-  if (pkt.tick % 60 != 0) {
-    bytes_received[pkt.id] += pkt.size_bytes; 
-  }
-  else {
+  if (pkt.tick % 60 == 0) {
     incoming_rate[pkt.id] = C - bytes_received[pkt.id];
     bytes_received[pkt.id] = 0;
-//RCP stability constants alpha=1 beta=.5
-//    feedback_rate[pkt.id] = feedback_rate[pkt.id] * (1 + ((C - incoming_rate[pkt.id]) - ((pkt.queue/2)/avg_rtt[pkt.id]))/C);
-//    feedback_rate[pkt.id] += feedback_rate[pkt.id];
-    feedback_rate[pkt.id] += (B - pkt.queue - incoming_rate[pkt.id]);
   }
+  else {
+    bytes_received[pkt.id] += pkt.size_bytes; 
+  }
+
+  feedback_rate[pkt.id] += (B - pkt.queue - incoming_rate[pkt.id]);
 }
