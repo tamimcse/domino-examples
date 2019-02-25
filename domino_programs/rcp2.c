@@ -30,14 +30,11 @@ struct Packet {
 
 void func(struct Packet pkt) {
   pkt.id = pkt.dport;
-
+  feedback_rate[pkt.id] += (B - pkt.queue - incoming_rate[pkt.id]);
   //Update feedback throughput to the packet
   if (pkt.feedback_thput > feedback_rate[pkt.id]) {
     pkt.feedback_thput = feedback_rate[pkt.id];  
   }
-
-  //.98 * avg_rtt + .02 * pkt.rtt 
-  avg_rtt[pkt.id] = (avg_rtt[pkt.id] * 49 + pkt.rtt)/50;
   
   if (pkt.tick % 60 == 0) {
     incoming_rate[pkt.id] = C - bytes_received[pkt.id];
@@ -47,5 +44,5 @@ void func(struct Packet pkt) {
     bytes_received[pkt.id] += pkt.size_bytes; 
   }
 
-  feedback_rate[pkt.id] += (B - pkt.queue - incoming_rate[pkt.id]);
+  
 }
