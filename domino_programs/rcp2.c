@@ -1,5 +1,6 @@
 #define NUM_PORTS 64
 #define C 1000 //Link capacity (per port)
+#define B 2000 //2 * C
 
 //last time when RCP rate was calculated
 int last_time = 0;
@@ -47,6 +48,6 @@ void func(struct Packet pkt) {
 //RCP stability constants alpha=1 beta=.5
 //    feedback_rate[pkt.id] = feedback_rate[pkt.id] * (1 + ((C - incoming_rate[pkt.id]) - ((pkt.queue/2)/avg_rtt[pkt.id]))/C);
 //    feedback_rate[pkt.id] += feedback_rate[pkt.id];
-//    feedback_rate[pkt.id] += (pkt.queue/2)/avg_rtt[pkt.id];
+    feedback_rate[pkt.id] += (B - pkt.queue - incoming_rate[pkt.id]);
   }
 }
