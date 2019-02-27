@@ -10,7 +10,7 @@ int avg_rtt = 200;
 //RCP Control Intervals for each port
 int control_intervals [NUM_PORTS] = {200};
 //RCP feedback throughput for each port
-int feedback_rate [NUM_PORTS] = {200};
+int feedback_rate = 200;
 //bytes recieved per port
 int bytes_received [NUM_PORTS] = {0};
 //incoming rate per port
@@ -31,10 +31,10 @@ struct Packet {
 void func(struct Packet pkt) {
   pkt.id = pkt.dport;
   avg_rtt = (avg_rtt * 49 + pkt.rtt)/50;
-  feedback_rate[pkt.id] += (B - ((pkt.queue/avg_rtt)/2) - incoming_rate[pkt.id])/C;
+  feedback_rate += (B - ((pkt.queue/avg_rtt)/2) - incoming_rate[pkt.id])/C;
   //Update feedback throughput to the packet
-  if (pkt.feedback_thput > feedback_rate[pkt.id]) {
-    pkt.feedback_thput = feedback_rate[pkt.id];  
+  if (pkt.feedback_thput > feedback_rate) {
+    pkt.feedback_thput = feedback_rate;  
   }
   
   if (pkt.tick % 60 == 0) {
