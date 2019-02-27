@@ -37,6 +37,7 @@ void func(struct Packet pkt) {
     bytes_received = 0;
     queue = tmp_queue;
     tmp_queue = 1000;
+    control_intervals = avg_rtt;
   }
   else {
     bytes_received += pkt.size_bytes; 
