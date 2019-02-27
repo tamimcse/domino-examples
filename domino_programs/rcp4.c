@@ -6,10 +6,12 @@
 int last_time = 0;
 
 int avg_rtt = 200;
-int control_intervals [NUM_PORTS] = {200};
+int control_intervals = 200;
 int feedback_rate = 200;
 int bytes_received = 0;
 int incoming_rate = 0;
+int queue = 0;
+int tmp_queue = 0;
 
 
 struct Packet {
@@ -35,10 +37,20 @@ void func(struct Packet pkt) {
   if (pkt.tick % 60 == 0) {
     incoming_rate = C - bytes_received;
     bytes_received = 0;
+    queue = tmp_queue;
+    tmp_queue = 1000;
   }
   else {
     bytes_received += pkt.size_bytes; 
   }
+
+  if (tmp_queue > pkt.queue)
+    tmp_queue = pkt.queue;
+
+/*  if ((pkt.time - last_time) < control_intervals) {
+    if (tmp_queue > pkt.queue)
+      tmp_queue = pkt.queue;  
+  }*/
 
   
 }
