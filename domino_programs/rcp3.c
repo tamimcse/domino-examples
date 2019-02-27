@@ -31,7 +31,7 @@ struct Packet {
 void func(struct Packet pkt) {
   pkt.id = pkt.dport;
   avg_rtt[pkt.id] = (avg_rtt[pkt.id] * 49 + pkt.rtt)/50;
-  feedback_rate[pkt.id] += (B - (pkt.queue/avg_rtt[pkt.id]) - incoming_rate[pkt.id])/C;
+  feedback_rate[pkt.id] += (B - ((pkt.queue/avg_rtt[pkt.id])/2) - incoming_rate[pkt.id])/C;
   //Update feedback throughput to the packet
   if (pkt.feedback_thput > feedback_rate[pkt.id]) {
     pkt.feedback_thput = feedback_rate[pkt.id];  
