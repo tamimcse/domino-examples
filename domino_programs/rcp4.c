@@ -27,7 +27,7 @@ struct Packet {
 
 void func(struct Packet pkt) {
   avg_rtt = (avg_rtt * 49 + pkt.rtt)/50;
-  feedback_rate += (B - ((queue/avg_rtt)/2) - incoming_rate)/C;
+
   if (pkt.feedback_thput > feedback_rate) {
     pkt.feedback_thput = feedback_rate;  
   }
@@ -37,7 +37,7 @@ void func(struct Packet pkt) {
     bytes_received = 0;
     queue = tmp_queue;
     tmp_queue = 1000;
-    control_intervals = avg_rtt;
+    feedback_rate += (B - ((queue/avg_rtt)/2) - incoming_rate)/C;
   }
   else {
     bytes_received += pkt.size_bytes; 
