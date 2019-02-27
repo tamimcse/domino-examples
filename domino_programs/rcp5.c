@@ -33,7 +33,7 @@ void func(struct Packet pkt) {
   }
   
   if (pkt.tick % 60 == 0) {
-    incoming_rate = C - bytes_received;
+    incoming_rate = bytes_received/control_intervals;
     bytes_received = 0;
     queue = tmp_queue;
     tmp_queue = 1000;
