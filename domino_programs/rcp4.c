@@ -37,7 +37,7 @@ void func(struct Packet pkt) {
     bytes_received = 0;
     queue = tmp_queue;
     tmp_queue = 1000;
-    feedback_rate += (C + C - ((queue/avg_rtt)/2) - incoming_rate)/C;
+    feedback_rate += (C + (((C - ((queue/avg_rtt)/2) - incoming_rate) * 60)/avg_rtt))/C;
   }
   else {
     bytes_received += pkt.size_bytes; 
