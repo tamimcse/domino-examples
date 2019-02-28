@@ -4,40 +4,41 @@
 #define T 50 //Control Interval in ms
 #define A 50000 //T*1000
 
-//State variables
-int avg_rtt = 200; // in ms
-int feedback_rate = 200; //in MB
-int bytes_received = 0; //in Bytes
-int incoming_rate = 0; //in MB
+// Running average of RTT in ms
+int RTT = 200; 
+//RCP feedback rate in MB/s
+int R = 200; 
+//Number of Bytes received during the control interval
+int B = 0;
+//Incoming rate in MB/s 
+int Y = 0; 
 
 //Packet headers and meta-data
 struct Packet {
   int size_bytes;
   int rtt;
   int queue;
-  int feedback_thput;
+  int Rp;
   int tick;
 };
 
 void func(struct Packet pkt) {
   //Calculate running average of RTT
-  avg_rtt = (avg_rtt * 49 + pkt.rtt)/50;
+  RTT = (RTT * 49 + pkt.rtt)/50;
 
   //Write the throughput in packet header
-  if (pkt.feedback_thput > feedback_rate)
-    pkt.feedback_thput = feedback_rate;  
+  if (pkt.Rp > R)
+    pkt.Rp = R;  
   
   //Control interval has expired, so
   // calculate the feeback throughput
   // and reset the state variables
   if (pkt.tick % T == 0) {
-    incoming_rate = C - bytes_received/A;
-    bytes_received = 0;
-    feedback_rate *= (C + (((C - \
-      ((pkt.queue/avg_rtt)/2) - \
-      incoming_rate) * T)/avg_rtt))/C;
+    Y = C - B/A;
+    B = 0;
+    R *= (C + (((C - ((pkt.queue/RTT)/2) - Y) * T)/RTT))/C;
   }
   else {
-    bytes_received += pkt.size_bytes; 
+    B += pkt.size_bytes; 
   }
 }
