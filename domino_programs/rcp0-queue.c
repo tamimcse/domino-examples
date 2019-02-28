@@ -37,7 +37,7 @@ void func(struct Packet pkt) {
   if (pkt.tick % T == 0) {
     Y = C - B/A;
     B = 0;
-    R *= (C+(((C-((pkt.queue/RTT)/2)-Y)*T)/RTT))/C;
+    R *= 1+(((C-Y-((pkt.queue/RTT)/2))*T)/RTT)/C;
   }
   else {
     B += pkt.size_bytes; 
