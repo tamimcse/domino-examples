@@ -1,6 +1,8 @@
 #define NUM_PORTS 64
 #define C 1000 //Link capacity (per port)
 #define B 2000 //2 * C
+#define T 50
+#define A 20 //A is calculated as 1000/T
 
 //last time when RCP rate was calculated
 int last_time = 0;
@@ -32,12 +34,12 @@ void func(struct Packet pkt) {
     pkt.feedback_thput = feedback_rate;  
   }
   
-  if (pkt.tick % 60 == 0) {
-    incoming_rate = C - bytes_received;
+  if (pkt.tick % T == 0) {
+    incoming_rate = C - bytes_received * A;
     bytes_received = 0;
     queue = tmp_queue;
     tmp_queue = 1000;
-    feedback_rate += (C + (((C - ((queue/avg_rtt)/2) - incoming_rate) * 60)/avg_rtt))/C;
+    feedback_rate += (C + (((C - ((queue/avg_rtt)/2) - incoming_rate) * T)/avg_rtt))/C;
   }
   else {
     bytes_received += pkt.size_bytes; 
