@@ -11,8 +11,8 @@ int R = 200;
 //Number of Bytes received during the 
 //control interval
 int B = 0;
-//Incoming rate in MB/s 
-int Y = 0; 
+//Spare capacity in MB/s 
+int S = 0; 
 
 //Packet headers and meta-data
 struct Packet {
@@ -35,9 +35,9 @@ void func(struct Packet pkt) {
   // calculate the feeback throughput
   // and reset the state variables
   if (pkt.tick % T == 0) {
-    Y = C - B/A;
+    S = C - B/A;
     B = 0;
-    R *= 1+((C-Y-((pkt.queue/RTT)/2))*T/RTT)/C;
+    R *= 1+((S-((pkt.queue/RTT)/2))*T/RTT)/C;
   }
   else {
     B += pkt.size_bytes; 
