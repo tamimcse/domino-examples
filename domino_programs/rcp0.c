@@ -1,9 +1,7 @@
-//Capacity of the line card
-#define C 1000
-//Control Interval
-#define T 50
-//1000/T
-#define A 20 
+// rcp.c
+#define C 1000 //Capacity of the line card
+#define T 50 //Control Interval
+#define A 20 //1000/T
 
 int avg_rtt = 200;
 int feedback_rate = 200;
@@ -12,13 +10,11 @@ int incoming_rate = 0;
 int queue = 0;
 int tmp_queue = 0;
 
-
 struct Packet {
   int size_bytes;
   int rtt;
   int queue;
   int feedback_thput;
-  int time;
   int tick;
 };
 
