@@ -33,7 +33,7 @@ void func(struct Packet pkt) {
   if (pkt.tick % T == 0) {
     incoming_rate = C - bytes_received/A;
     bytes_received = 0;
-    feedback_rate += (C + (((C - \
+    feedback_rate *= (C + (((C - \
       ((pkt.queue/avg_rtt)/2) - \
       incoming_rate) * T)/avg_rtt))/C;
   }
