@@ -1,5 +1,6 @@
 // rcp.c
-#define C 64000 //Capacity of the line card in MB
+//Capacity of the line card in megabytes
+#define C 64000 
 #define T 50 //Control Interval in ms
 #define A 50000 //T*1000
 
