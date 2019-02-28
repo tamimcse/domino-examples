@@ -1,14 +1,11 @@
-#define NUM_PORTS 64
-#define C 1000 //Link capacity (per port)
-#define B 2000 //2 * C
+//Capacity of the line card
+#define C 1000
+//Control Interval
 #define T 50
-#define A 20 //A is calculated as 1000/T
-
-//last time when RCP rate was calculated
-int last_time = 0;
+//1000/T
+#define A 20 
 
 int avg_rtt = 200;
-int control_intervals = 200;
 int feedback_rate = 200;
 int bytes_received = 0;
 int incoming_rate = 0;
@@ -30,9 +27,8 @@ struct Packet {
 void func(struct Packet pkt) {
   avg_rtt = (avg_rtt * 49 + pkt.rtt)/50;
 
-  if (pkt.feedback_thput > feedback_rate) {
+  if (pkt.feedback_thput > feedback_rate)
     pkt.feedback_thput = feedback_rate;  
-  }
   
   if (pkt.tick % T == 0) {
     incoming_rate = C - bytes_received * A;
@@ -47,11 +43,4 @@ void func(struct Packet pkt) {
 
   if (tmp_queue > pkt.queue)
     tmp_queue = pkt.queue;
-
-/*  if ((pkt.time - last_time) < control_intervals) {
-    if (tmp_queue > pkt.queue)
-      tmp_queue = pkt.queue;  
-  }*/
-
-  
 }
