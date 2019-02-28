@@ -20,8 +20,6 @@ struct Packet {
   int feedback_thput;
   int time;
   int tick;
-  int dport;
-  int id; // array index
 };
 
 void func(struct Packet pkt) {
