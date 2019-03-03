@@ -1,28 +1,25 @@
-// rcp.c
 //Capacity of the line card in megabytes
 #define C 64000 
 #define T 50 //Control Interval in ms
-#define A 50000 //T*1000
+#define A 50000 //1000*T
 
+/*********State Variables****************/
 // Running average of RTT in ms
 int RTT = 200; 
-//RCP feedback rate in MB/s
-int R = 200; 
-//Number of Bytes received during the 
-//control interval
-int B = 0;
-//Spare capacity in MB/s 
-int S = 0; 
-
-//Packet headers and meta-data
+int R = 200; //RCP feedback rate in MB/s
+int B = 0; //Number of Bytes received
+int S = 0; //Spare capacity in MB/s
+ 
+/****Packet headers and meta-data********/
 struct Packet {
   int size_bytes;
-  int rtt;
+  int rtt; //Parsed from RCP header
   int queue;
-  int Rp;
+  int Rp; //RCP feedback rate
   int tick;
 };
 
+/*********Packet Transaction****************/
 void func(struct Packet pkt) {
   //Calculate running average of RTT
   RTT = (RTT * 49 + pkt.rtt)/50;
@@ -30,7 +27,7 @@ void func(struct Packet pkt) {
   //Write the throughput in packet header
   if (pkt.Rp > R)
     pkt.Rp = R;  
-  
+
   //Control interval has expired, so
   // calculate the feeback throughput
   // and reset the state variables
