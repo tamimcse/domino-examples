@@ -2,7 +2,7 @@
 #define C 1000 //Link capacity (per port)
 #define B 2000 //2 * C
 #define LEVEL16_SIZE 65536
-#define LEVEL24_SIZE 65536
+#define LEVEL24_SIZE 65536 //actually LEVEL24_SIZE * 4
 #define CHUNK_SIZE 256
 #define DEF_NEXT_HOP 1
 
@@ -24,6 +24,8 @@ int incoming_rate [NUM_PORTS] = {0};
 int N16[LEVEL16_SIZE] = {0}; 
 int C16[LEVEL16_SIZE] = {0};
 int N24[LEVEL24_SIZE] = {0};
+int CK24_bitmap[LEVEL24_SIZE] = {0};
+//int CK24_offset[LEVEL24_SIZE] = {0};
 
 struct Packet {
   int dport;
@@ -32,7 +34,12 @@ struct Packet {
   int idx24;
   int ck24_idx;
   int ck24_off;
+  int part_idx;
+  int part_off;
+  int bitmap;
 };
+
+int tmp = 0;
 
 void func(struct Packet pkt) {
   pkt.dport = DEF_NEXT_HOP;
@@ -52,6 +59,13 @@ void func(struct Packet pkt) {
     pkt.dport = N24[pkt.idx24]; 
   }
   
+  pkt.part_idx = pkt.ck24_off / 64;
+  pkt.part_idx += pkt.idx24 * 4;
+  pkt.part_off = pkt.ck24_off % 64;
+  //CK24_bitmap[pkt.part_idx] &
+  if ( (1 << pkt.part_off)) {
+    pkt.dport = N24[pkt.idx24];
+  }
 
 /*
   avg_rtt[pkt.id] = (avg_rtt[pkt.id] * 49 + pkt.rtt)/50;
