@@ -1,5 +1,6 @@
 #define LEVEL16_SIZE 65536
 #define LEVEL24_SIZE 65536 //actually LEVEL24_SIZE * 4
+#define LEVEL32_SIZE 65536
 #define CHUNK_SIZE 256
 #define DEF_NEXT_HOP 1
 
@@ -8,12 +9,15 @@ int C16[LEVEL16_SIZE] = {0};
 int N24[LEVEL24_SIZE] = {0};
 int CK24_bitmap[LEVEL24_SIZE] = {0};
 int CK24_offset[LEVEL24_SIZE] = {0};
+int C24[LEVEL24_SIZE] = {0};
+int N32[LEVEL32_SIZE] = {0};
 
 struct Packet {
   int dport;
   int daddr;
   int idx16;
   int idx24;
+  int idx32;
   int ck24_idx;
   int ck24_off;
   int part_idx;
@@ -51,9 +55,12 @@ void func(struct Packet pkt) {
   CK24_bitmap[pkt.part_idx] *= 1;
 
   if ( pkt.tmp & (1 << pkt.part_off)) {
-
     pkt.idx24 = CK24_offset[pkt.part_idx] + (((1 << pkt.part_off) - 1) & pkt.tmp);
+    pkt.idx32 = (C24[pkt.idx24] - 1) * CHUNK_SIZE + (pkt.daddr & 255);
   }
 
+  if (N32[pkt.idx32] != 0) {
+    pkt.dport = N32[pkt.idx32]; 
+  }
 
 }
