@@ -51,7 +51,8 @@ void func(struct Packet pkt) {
   CK24_bitmap[pkt.part_idx] *= 1;
 
   if ( pkt.tmp & (1 << pkt.part_off)) {
-    pkt.idx24 = CK24_offset[pkt.part_idx] ;//+ POPCNT_OFF(pkt.tmp, part_off);
+
+    pkt.idx24 = CK24_offset[pkt.part_idx] + (((1 << pkt.part_off) - 1) & pkt.tmp);
   }
 
 
