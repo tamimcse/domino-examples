@@ -7,7 +7,7 @@ int N16[LEVEL16_SIZE] = {0};
 int C16[LEVEL16_SIZE] = {0};
 int N24[LEVEL24_SIZE] = {0};
 int CK24_bitmap[LEVEL24_SIZE] = {0};
-//int CK24_offset[LEVEL24_SIZE] = {0};
+int CK24_offset[LEVEL24_SIZE] = {0};
 
 struct Packet {
   int dport;
@@ -19,6 +19,7 @@ struct Packet {
   int part_idx;
   int part_off;
   int bitmap;
+  int tmp;
 };
 
 int tmp = 0;
@@ -44,8 +45,14 @@ void func(struct Packet pkt) {
   pkt.part_idx = pkt.ck24_off / 64;
   pkt.part_idx += pkt.idx24 * 4;
   pkt.part_off = pkt.ck24_off % 64;
-  //CK24_bitmap[pkt.part_idx] &
-  if ( (1 << pkt.part_off)) {
-    pkt.dport = N24[pkt.idx24];
+
+  //Hack!! Currently stateful atoms cannot be used for bitwise operator. So made it a packet meta-data. Need to change codelet(int state_1, int state_2, int pkt_1, int pkt_2, int pkt_...to accept bit[32] instead
+  pkt.tmp = CK24_bitmap[pkt.part_idx];
+  CK24_bitmap[pkt.part_idx] *= 1;
+
+  if ( pkt.tmp & (1 << pkt.part_off)) {
+    pkt.idx24 = CK24_offset[pkt.part_idx] ;//+ POPCNT_OFF(pkt.tmp, part_off);
   }
+
+
 }
