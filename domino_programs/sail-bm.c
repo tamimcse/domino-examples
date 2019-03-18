@@ -29,8 +29,6 @@ struct Packet {
   int tmp1;
 };
 
-int tmp = 0;
-
 void func(struct Packet pkt) {
   pkt.dport = DEF_NEXT_HOP;
 
