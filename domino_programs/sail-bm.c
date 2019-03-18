@@ -1,3 +1,5 @@
+#include "popcnt.h"
+
 #define LEVEL16_SIZE 65536
 #define LEVEL24_SIZE 65536 //actually LEVEL24_SIZE * 4
 #define LEVEL32_SIZE 65536
@@ -24,6 +26,7 @@ struct Packet {
   int part_off;
   int bitmap;
   int tmp;
+  int tmp1;
 };
 
 int tmp = 0;
@@ -55,13 +58,12 @@ void func(struct Packet pkt) {
   CK24_bitmap[pkt.part_idx] *= 1;
 
   if ( pkt.tmp & (1 << pkt.part_off)) {
-//    pkt.idx24 = CK24_offset[pkt.part_idx] + POPCNT(((1 << pkt.part_off) - 1) & pkt.tmp);
-    pkt.idx24 = CK24_offset[pkt.part_idx] + (((1 << pkt.part_off) - 1) & pkt.tmp);
+    pkt.tmp1  = popcnt((((1 << pkt.part_off) - 1) & pkt.tmp));
+    pkt.idx24 = CK24_offset[pkt.part_idx] + pkt.tmp1;
     pkt.idx32 = (C24[pkt.idx24] - 1) * CHUNK_SIZE + (pkt.daddr & 255);
   }
 
   if (N32[pkt.idx32] != 0) {
     pkt.dport = N32[pkt.idx32]; 
   }
-
 }
