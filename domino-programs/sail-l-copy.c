@@ -30,49 +30,39 @@ struct Packet {
 };
 
 void func(struct Packet pkt) {
+  
+
   pkt.idx16 = pkt.daddr >> 16;
   if (N16[pkt.idx16] != 0) {
     pkt.dport = N16[pkt.idx16];    
-  } 
-  else if (C16[pkt.idx16] != 0) 
-  {
+  } else if (C16[pkt.idx16] != 0) {
     pkt.ck24_idx = C16[pkt.idx16] - 1;
     pkt.ck24_off = (pkt.daddr & 65280) >> 8;
     pkt.idx24 = pkt.ck24_idx * CHUNK_SIZE + pkt.ck24_off;
 
-    if (N24[pkt.idx24] != 0) 
-    {
+    if (N24[pkt.idx24] != 0) {
       pkt.dport = N24[pkt.idx24]; 
-    } 
-    else 
-    {
+    } else {
       pkt.part_idx = pkt.ck24_off / 64;
       pkt.part_idx += pkt.idx24 * 4;
       pkt.part_off = pkt.ck24_off % 64;
+  //Hack!! Currently stateful atoms cannot be used for bitwise operator. So made it a packet meta-data. Need to change codelet(int state_1, int state_2, int pkt_1, int pkt_2, int pkt_...to accept bit[32] instead
       pkt.tmp = CK24_bitmap[pkt.part_idx];
       CK24_bitmap[pkt.part_idx] *= 1;
-      if ( pkt.tmp & (1 << pkt.part_off)) 
-      {
+      if ( pkt.tmp & (1 << pkt.part_off)) {
         pkt.tmp1  = popcnt((((1 << pkt.part_off) - 1) & pkt.tmp));
 	pkt.idx24 = CK24_offset[pkt.part_idx] + pkt.tmp1;
 	pkt.idx32 = (C24[pkt.idx24] - 1) * CHUNK_SIZE + (pkt.daddr & 255);
-        if (N32[pkt.idx32] != 0) 
-        {
-	  pkt.dport = N32[pkt.idx32]; 
-        } 
-	else 
-	{
-	  pkt.dport = DEF_NEXT_HOP;
-        }
-      } 
-      else 
-      {
+      } else {
+	pkt.dport = DEF_NEXT_HOP;
+      }
+      if (N32[pkt.idx32] != 0) {
+	pkt.dport = N32[pkt.idx32]; 
+      } else {
 	pkt.dport = DEF_NEXT_HOP;
       }
     }
-  } 
-  else 
-  {
+  } else {
     pkt.dport = DEF_NEXT_HOP;
   }
 }
