@@ -16,7 +16,9 @@ int N32[LEVEL32_SIZE] = {0};
 
 struct Packet {
   int dport;
-  int daddr;
+  int daddr; 
+  double dest;
+  double idx;
   int idx16;
   int idx24;
   int idx32;
@@ -31,6 +33,8 @@ struct Packet {
 
 void func(struct Packet pkt) {
   pkt.dport = DEF_NEXT_HOP;
+
+  pkt.idx = pkt.dest >> 48;
 
   pkt.idx16 = pkt.daddr >> 16;
   if (N16[pkt.idx16] != 0) {
